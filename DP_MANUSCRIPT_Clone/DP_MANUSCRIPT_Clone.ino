@@ -6,7 +6,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // I2C address 0x27, 16 column and 2 rows
 
 #define pushbutton1 5
 #define pushbutton2 6
-#define pushbutton3 7
+#define pushbutton3 8
 
 // DC MOTOR connections
 int enA = 2;          
@@ -53,7 +53,6 @@ void setup() {
   Serial.begin(9600);
 
   servo.attach(0);
-
   servo.write(0);
 }
 
@@ -67,52 +66,52 @@ void Washing() {
   digitalWrite(L_EN,HIGH);
     
   // Accelerate from zero to maximum speed
-  for (int i = 10; i < 40; i++) {
+  for (int i = 10; i < 100; i++) {
     analogWrite(RPWM, i);
-    delay(300);
+    delay(100);
   }
     
   // Decelerate from maximum speed to zero
-  for (int i = 40; i >= 10; --i) {
+  for (int i = 100; i >= 10; --i) {
     analogWrite(RPWM, i);
-    delay(300);
+    delay(100);
   }
 
   delay(20);
 
-  for (int i = 10; i < 40; i++) {
+  for (int i = 10; i < 100; i++) {
     analogWrite(LPWM, i);
-    delay(200);
+    delay(100);
   }
 
   // Accelerate from zero to maximum speed
-  for (int i = 40; i >= 10; --i) {
+  for (int i = 100; i >= 10; --i) {
     analogWrite(LPWM, i);
-    delay(200);
+    delay(100);
   }
 
-  for (int i = 10; i < 40; i++) {
+  for (int i = 10; i < 100; i++) {
     analogWrite(RPWM, i);
-    delay(200);
+    delay(100);
   }
     
   // Decelerate from maximum speed to zero
-  for (int i = 40; i >= 10; --i) {
+  for (int i = 100; i >= 10; --i) {
     analogWrite(RPWM, i);
-    delay(200);
+    delay(100);
   }
 
   delay(20);
 
-  for (int i = 10; i < 40; i++) {
+  for (int i = 10; i < 100; i++) {
     analogWrite(LPWM, i);
-    delay(200);
+    delay(100);
   }
 
   // Accelerate from zero to maximum speed
-  for (int i = 40; i >= 10; --i) {
+  for (int i = 100; i >= 10; --i) {
     analogWrite(LPWM, i);
-    delay(200);
+    delay(100);
   }
     
 }
@@ -132,10 +131,16 @@ void Blender() {
     digitalWrite(R_EN,HIGH);
     digitalWrite(L_EN,HIGH);
 
-    analogWrite(RPWM, 225);
+    for(int i=0; i<256 ; i++) {
+      analogWrite(RPWM,i);
+      // analogWrite(LPWM,255-i);
+      delay(100);
+    }
+
+    delay(1000);
 
     if (digitalRead(pushbutton2) == LOW){
-      for(int i=225; i>0 ; i--) {
+      for(int i=255; i>=0 ; i--) {
         analogWrite(RPWM,i);
         // analogWrite(LPWM,255-i);
         delay(5);
@@ -184,11 +189,17 @@ void loop() {
   buttonState3 = digitalRead(pushbutton3);
   
   lcd.clear();                 // clear display
-  lcd.setCursor(5, 1);         // move cursor to   (0, 0)
-  lcd.print("Pulp Maker");        // print message at (0, 0)
-  lcd.setCursor(4, 2);         // move cursor to   (2, 1)
-  lcd.print("CHOOSE the Mode");     // print message at (2, 1)
-  delay(500);                 // display the above for two seconds
+  lcd.setCursor(1, 1);         // move cursor to   (0, 0)
+  lcd.print("Pulp Maker Machine");        // print message at (0, 0)
+  delay(3000);
+  lcd.clear();
+  lcd.setCursor(1, 0);         // move cursor to   (2, 1)
+  lcd.println("Blue - WASH");     // print message at (2, 1)
+  lcd.setCursor(1, 3);
+  lcd.println("Red - BLEND");        // print message at (0, 0)
+  lcd.setCursor(1, 2);
+  lcd.println("White - DRAIN");     // print message at (2, 1)
+  delay(5000);                 // display the above for two seconds
 
 	if (buttonState1 == LOW){
     Serial.println("WASH");
